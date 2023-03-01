@@ -26,4 +26,4 @@ jobs:
         ## and our Docker password which 
         password: ${{ secrets.DOCKER_PASSWORD }}
         ## to use tags other than latest
-        tags: "latest, another"
+        tags: "latest, $(date +%s)"
