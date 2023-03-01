@@ -15,6 +15,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build Docker image
-      run: docker build . --file ../../Project-1/Dockerfile --tag gawinthorndyke/my-go-app:$(date +%s)
+      run: docker build . --tag my-image-name:$(date +%s)
     - name: Push Docker image
       run: docker push gawinthorndyke/my-go-app:$(date +%s)
