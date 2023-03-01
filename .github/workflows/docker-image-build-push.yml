@@ -18,7 +18,7 @@ jobs:
     
     ## Builds our docker image!
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:${{ steps.pre-step.outputs.release-version }}
+      run: docker build . --file Dockerfile --tag my-image-name
 
     ## Publishes our image to Docker Hub 😎
     - name: Publish to Registry
