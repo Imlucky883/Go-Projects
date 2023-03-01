@@ -14,11 +14,10 @@ jobs:
     
     ## Builds our docker image!
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:latest
-    ## Push to ECR
-    - uses: actions/checkout@v3
-    - name: Login to ECR
+      run: docker build . --file Dockerfile --tag my-go-app:latest
       
+    ## Push to ECR
+    - name: Login to ECR
       id: ecr
       uses: elgohr/ecr-login-action@v3
       with:
@@ -29,6 +28,7 @@ jobs:
       uses: elgohr/Publish-Docker-Github-Action@v5
       with:
         name: my-go-app
+        image: my-go-app
         username: ${{ steps.ecr.outputs.username }}
         password: ${{ steps.ecr.outputs.password }}
         registry: ${{ steps.ecr.outputs.registry }}
