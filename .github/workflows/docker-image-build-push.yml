@@ -10,10 +10,15 @@ jobs:
     steps:
     ## checks out our project source code
     - uses: actions/checkout@v2
+
+    - uses: actions/checkout@v3
+    - id: pre-step
+      shell: bash
+      run: echo "release-version=$(echo ${GITHUB_REF:10})" >> $GITHUB_OUTPUT
     
     ## Builds our docker image!
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag my-image-name:${{ steps.pre-step.outputs.release-version }}
 
     ## Publishes our image to Docker Hub 😎
     - name: Publish to Registry
@@ -26,4 +31,5 @@ jobs:
         ## and our Docker password which 
         password: ${{ secrets.DOCKER_PASSWORD }}
         ## to use tags other than latest
-        tags: "latest, $(date +%s)"
+        tags: "latest, ${{ steps.pre-step.outputs.release-version }}"
+        snapshot: true
