@@ -26,7 +26,8 @@ jobs:
       uses: dawidd6/action-ansible-playbook@v2.6.1
       with:
         playbook: .github/workflows/push-dockerfile.yml
-        inventory:
+        inventory: |
+          [all]
           172.31.53.77
         key: ${{secrets.SSH_PRIVATE_KEY}}
 
