@@ -2,7 +2,7 @@ name: Deploy to Cloud
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     environment: aws
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+      - name: Check out code
+        uses: actions/checkout@v2
 
-    - name: Run Ansible playbook
-      uses: dawidd6/action-ansible-playbook@v2.6.1
-      with:
-        playbook: .github/workflows/push-dockerfile.yml
-        inventory: |
-          [web]
-          172.31.53.77
-        key: ${{secrets.SSH_PRIVATE_KEY}}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: SSH into remote server
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        env:
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        run: |
+          ssh $REMOTE_USER@$REMOTE_HOST 'ls -l /'
