@@ -1,4 +1,4 @@
-name: Deploy to ECR
+name: Deploy to Cloud
 
 on:
  
@@ -8,7 +8,7 @@ on:
 jobs:
   
   build:
-    name: Build Image
+    name: Deploy to Cloud
     runs-on: ubuntu-latest
     environment: aws
     steps:
@@ -22,15 +22,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+    - name: Run Ansible playbook
+      uses: dawidd6/action-ansible-playbook@v2.6.1
+      with:
+        playbook: push-dockerfile.yml
+        inventory: |
+          [web]
+          172.31.53.77
+        key: ${{secrets.SSH_PRIVATE_KEY}}
 
-    - name: Build, tag, and push image to Amazon ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: my-go-app
-        IMAGE_TAG: latest
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
