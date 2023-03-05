@@ -1,6 +1,6 @@
 ---
 - name: Running go app on docker container
-  hosts: all
+  hosts: web
   become: yes
 
   vars:
