@@ -1,0 +1,31 @@
+---
+- name: Running go app on docker container
+  hosts: web
+  become: yes
+
+  vars:
+    image: gawinthorndyke/my-go-app
+    dockerpath: /myfile
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+
+    - name: Copy Dockerfile
+      copy:
+        src: Dockerfile
+        dest: /myfile
+        mode: 0777
+
+    - name: Build Docker image
+      command: docker build -t {{image}} {{dockerpath}}
+
+    - name: Run Docker container
+      command: docker run -d --name mygocontainer -p 8081:8081 {{image}}
+
